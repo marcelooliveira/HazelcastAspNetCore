@@ -3,20 +3,11 @@
 @model ECommerce.Pages.CartModel
 @{
     ViewData["Title"] = "Shopping Cart";
-
-    var cartItems = new List<CartItem>()
-            {
-                new CartItem ( 1, 17, "🥥", "Coconut", 4.50m, 2 ),
-                new CartItem ( 2, 13, "🍒", "Cherries box", 3.50m, 3 ),
-                new CartItem ( 3, 4, "🍊", "Tangerine box", 3.50m, 1 ),
-                new CartItem ( 4, 10, "🍏", "Green Apple box", 6.50m, 2 ),
-                new CartItem ( 5, 7, "🍍", "Pineapple box", 3.50m, 4 )
-            };
 }
 
 <div class="row mt-4">
     <div class="col col-md-8 offset-md-2 alert alert-primary bg-success text-white text-center">
-        <span class="h3">YOUR FRIENDLY GROCERY</span>
+        <span class="h3">🛒 YOUR FRIENDLY GROCERY</span>
     </div>
 </div>
 
@@ -29,11 +20,11 @@
             <span class="col col-2 mt-0 h6 border-left border-light text-right">Unit Price</span>
             <span class="col col-2 mt-0 h6 border-left border-light text-right">Total</span>
         </div>
-        @foreach (var cartItem in cartItems)
+        @foreach (var cartItem in Model.CartItems)
         {
             <div class="row alert alert-warning flex-row align-items-center">
-                <input type="hidden" value=@cartItem.Id/>
-                <input type="hidden" value=@cartItem.ProductId/>
+                <input type="hidden" value=@cartItem.Id />
+                <input type="hidden" value=@cartItem.ProductId />
                 <span class="col col-1 mt-0 h6 border-left border-light text-center">@cartItem.Quantity</span>
                 <span class="col col-1 mt-0 h2 border-left border-light text-center">@cartItem.Icon</span>
                 <span class="col col-6 mt-0 h6 border-left border-light">@cartItem.Description</span>
@@ -44,10 +35,12 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col col-md-2 offset-md-8">
-        <input type="button" class="h6 mt-0 float-right text-center"
-               value="➕ Add New Product" onclick="location.href='/addtocart'" />
+<form method="POST">
+    <div class="row mt-0">
+        <div class="col col-4 offset-md-6">
+            <input type="submit" class="h6 mt-0 float-right text-center" name="addToCartSubmit" value="➕ Add to Cart" />
+            <input type="submit" class="h6 mt-0 mr-4 button float-right text-center" name="checkoutSubmit" value="✔️ Check out"
+                   @(Model.CartItems.Count() == 0 ? "disabled" : "") />
+        </div>
     </div>
-</div>
-
+</form>
