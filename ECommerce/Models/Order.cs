@@ -13,18 +13,16 @@ namespace ECommerce.Models
 
         }
 
-        public Order(int id, DateTime placement, int itemCount, decimal total, bool shipped) : base(id)
+        public Order(int id, DateTime placement, int itemCount, decimal total) : base(id)
         {
             Placement = placement;
             ItemCount = itemCount;
             Total = total;
-            Shipped = shipped;
         }
 
         public DateTime Placement { get; set; }
         public int ItemCount { get; set; }
         public decimal Total { get; set; }
-        public bool Shipped { get; set; }
     }
 
 }
