@@ -24,8 +24,9 @@ namespace ECommerce.Pages
         [BindProperty]
         public List<Product> Products { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
+            //await eCommerceData.InitializeAsync();
             this.CartItem = new CartItem(0, 1, "🍇", "Grapes box", 3.50m, 1);
             this.Products = eCommerceData.GetProductList();
             return Page();
@@ -38,7 +39,7 @@ namespace ECommerce.Pages
                 return Page();
             }
 
-            eCommerceData.AddCartItem(CartItem);
+            eCommerceData.AddCartItemAsync(CartItem);
 
             return RedirectToPage("Cart");
         }

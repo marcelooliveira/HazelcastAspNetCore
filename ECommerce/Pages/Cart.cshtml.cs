@@ -23,17 +23,18 @@ namespace ECommerce.Pages
         [BindProperty]
         public string checkoutSubmit { get; set; }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            InitializePage();
+            await InitializePageAsync();
         }
 
-        private void InitializePage()
+        private async Task InitializePageAsync()
         {
-            this.CartItems = eCommerceData.GetCartItems();
+            //await eCommerceData.InitializeAsync();
+            this.CartItems = await eCommerceData.GetCartItemsAsync();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -47,10 +48,10 @@ namespace ECommerce.Pages
 
             if (!string.IsNullOrWhiteSpace(checkoutSubmit))
             {
-                eCommerceData.Checkout();
+                await eCommerceData.CheckoutAsync();
             }
 
-            InitializePage();
+            await InitializePageAsync();
             return Page();
         }
     }
