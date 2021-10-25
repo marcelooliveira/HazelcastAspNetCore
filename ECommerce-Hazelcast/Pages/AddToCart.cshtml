@@ -1,0 +1,88 @@
+﻿@page
+@using ECommerce.Models
+@model ECommerce.Pages.AddToCartModel
+@{
+    ViewData["Title"] = "Add to Cart";
+}
+
+<div class="row mt-4">
+    <div class="col col-md-8 offset-md-2 alert alert-primary bg-success text-white text-center">
+        <span class="h3">🛒 YOUR FRIENDLY GROCERY</span>
+    </div>
+</div>
+
+<form method="POST">
+    <div class="row">
+        <div class="col col-md-8 offset-md-2">
+            <div class="row alert alert-warning bg-dark text-white">
+                <span class="col col-1 mt-0 h6 border-left border-light text-center">Qty</span>
+                <span class="col col-7 mt-0 h6 border-left border-light text-center">Product</span>
+                <span class="col col-2 mt-0 h6 border-left border-light text-right">Unit Price</span>
+                <span class="col col-2 mt-0 h6 border-left border-light text-right">Total</span>
+            </div>
+            <div class="row alert alert-warning flex-row align-items-center">
+                <input type="hidden" id="cartItemId" asp-for="CartItem.Id" />
+                <input type="number" class="col col-1 mt-0 h6" id="quantity" asp-for="CartItem.Quantity"/>
+                <select id="productId" class="col col-7 mt-0 h6" asp-for="CartItem.ProductId">
+                    @foreach (var product in Model.Products)
+                    {
+                        @if (Model.CartItem.ProductId == product.Id)
+                        {
+                            <option value="@product.Id" selected>@product.Icon @product.Description</option>
+                        }
+                        else
+                        {
+                            <option value="@product.Id">@product.Icon @product.Description</option>
+                        }
+
+                    }
+                </select>
+                <span id="unitPrice" class="col col-2 mt-0 h6 border-left border-light text-right">@Model.CartItem.UnitPrice.ToString("C")</span>
+                <span id="total" class="col col-2 mt-0 h6 border-left border-light text-right">@Model.CartItem.Total.ToString("C")</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-0">
+        <div class="col col-4 offset-md-6">
+            <input type="submit" class="h6 mt-0 float-right text-center" value="✔️ Confirm" />
+            <input type="button" class="h6 mt-0 mr-4 button float-right text-center"
+                   value="❌ Cancel" onclick="location.href='/Cart'" />
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $().ready(function () {
+            $("#quantity").change(function () {
+                updateCartItem();
+            });
+
+            $("#productId").change(function () {
+                updateCartItem();
+            });
+        });
+
+        function updateCartItem() {
+            var cartItem = {
+                Id: $("#cartItemId").val(),
+                ProductId: $("#productId").val(),
+                Quantity: $("#quantity").val()
+            };
+
+            $.ajax({
+                type: 'GET',
+                url: "AddToCart/?handler=CartItem",
+                contentType: "application/json",
+                dataType: "json",
+                data: cartItem,
+                success: function (data) {
+                    $("#unitPrice").html('$' + Number.parseFloat(data.unitPrice).toFixed(2));
+                    $("#total").html('$' + Number.parseFloat(data.total).toFixed(2));
+                }
+            });
+        }
+    </script>
+}
