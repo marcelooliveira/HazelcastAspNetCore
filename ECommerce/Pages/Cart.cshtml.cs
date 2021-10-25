@@ -10,6 +10,13 @@ namespace ECommerce.Pages
 {
     public class CartModel : PageModel
     {
+        private readonly IECommerceData eCommerceData;
+
+        public CartModel(IECommerceData eCommerceData)
+        {
+            this.eCommerceData = eCommerceData;
+        }
+
         public List<CartItem> CartItems { get; private set; }
         [BindProperty]
         public string addToCartSubmit { get; set; }
@@ -23,7 +30,7 @@ namespace ECommerce.Pages
 
         private void InitializePage()
         {
-            this.CartItems = ECommerceData.Instance.GetCartItems();
+            this.CartItems = eCommerceData.GetCartItems();
         }
 
         public IActionResult OnPost()
@@ -40,7 +47,7 @@ namespace ECommerce.Pages
 
             if (!string.IsNullOrWhiteSpace(checkoutSubmit))
             {
-                ECommerceData.Instance.Checkout();
+                eCommerceData.Checkout();
             }
 
             InitializePage();

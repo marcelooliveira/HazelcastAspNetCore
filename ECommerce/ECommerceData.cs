@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace ECommerce
 {
-    public class ECommerceData
+    public class ECommerceData : IECommerceData
     {
         private readonly Dictionary<int, CartItem> cartItems;
         private readonly Queue<Order> ordersAwaitingPayment;
         private readonly List<Order> ordersForDelivery;
         private readonly List<Order> ordersRejected;
 
-        private ECommerceData()
+        public ECommerceData()
         {
             cartItems = new Dictionary<int, CartItem>()
             {
-                [17] = new CartItem ( 1, 17, "🥥", "Coconut", 4.50m, 2 ),
-                [13] = new CartItem ( 2, 13, "🍒", "Cherries box", 3.50m, 3 ),
-                [4] = new CartItem ( 3, 4, "🍊", "Tangerine box", 3.50m, 1)
+                [17] = new CartItem(1, 17, "🥥", "Coconut", 4.50m, 2),
+                [13] = new CartItem(2, 13, "🍒", "Cherries box", 3.50m, 3),
+                [4] = new CartItem(3, 4, "🍊", "Tangerine box", 3.50m, 1)
             };
 
             ordersAwaitingPayment = new Queue<Order>(
@@ -42,18 +42,6 @@ namespace ECommerce
                     new Order(1004, new DateTime(2021, 10, 3, 17, 17, 0), 2, 24.00m),
                     new Order(1005, new DateTime(2021, 10, 7, 09, 12, 0), 4, 17.00m)
                 };
-        }
-
-        static ECommerceData instance;
-        public static ECommerceData Instance {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new ECommerceData();
-                }
-                return instance;
-            }
         }
 
         public List<Product> GetProductList()

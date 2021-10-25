@@ -12,6 +12,13 @@ namespace ECommerce.Pages
 {
     public class AddToCartModel : PageModel
     {
+        private readonly IECommerceData eCommerceData;
+
+        public AddToCartModel(IECommerceData eCommerceData)
+        {
+            this.eCommerceData = eCommerceData;
+        }
+
         [BindProperty]
         public CartItem CartItem { get; set; }
         [BindProperty]
@@ -20,7 +27,7 @@ namespace ECommerce.Pages
         public IActionResult OnGet()
         {
             this.CartItem = new CartItem(0, 1, "🍇", "Grapes box", 3.50m, 1);
-            this.Products = ECommerceData.Instance.GetProductList();
+            this.Products = eCommerceData.GetProductList();
             return Page();
         }
 
@@ -31,15 +38,14 @@ namespace ECommerce.Pages
                 return Page();
             }
 
-
-            ECommerceData.Instance.AddCartItem(CartItem);
+            eCommerceData.AddCartItem(CartItem);
 
             return RedirectToPage("Cart");
         }
 
         public JsonResult OnGetCartItem(CartItem cartItem)
         {
-            var product = ECommerceData.Instance.GetProductList().Where(p => p.Id == cartItem.ProductId).Single();
+            var product = eCommerceData.GetProductList().Where(p => p.Id == cartItem.ProductId).Single();
             var newItem = new CartItem(cartItem.Id, product.Id, product.Icon, product.Description, product.UnitPrice, cartItem.Quantity);
             return new JsonResult(newItem);
         }

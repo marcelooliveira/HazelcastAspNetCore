@@ -10,6 +10,13 @@ namespace ECommerce.Pages
 {
     public class TrackingModel : PageModel
     {
+        private readonly IECommerceData eCommerceData;
+
+        public TrackingModel(IECommerceData eCommerceData)
+        {
+            this.eCommerceData = eCommerceData;
+        }
+
         public List<Order> OrdersAwaitingPayment { get; private set; }
         public List<Order> OrdersForDelivery { get; private set; }
         public List<Order> OrdersRejected { get; private set; }
@@ -25,9 +32,9 @@ namespace ECommerce.Pages
 
         private void InitializePage()
         {
-            this.OrdersAwaitingPayment = ECommerceData.Instance.OrdersAwaitingPayment();
-            this.OrdersForDelivery = ECommerceData.Instance.OrdersForDelivery();
-            this.OrdersRejected = ECommerceData.Instance.OrdersRejected();
+            this.OrdersAwaitingPayment = eCommerceData.OrdersAwaitingPayment();
+            this.OrdersForDelivery = eCommerceData.OrdersForDelivery();
+            this.OrdersRejected = eCommerceData.OrdersRejected();
         }
 
         public IActionResult OnPost()
@@ -39,12 +46,12 @@ namespace ECommerce.Pages
 
             if (!string.IsNullOrWhiteSpace(approveSubmit))
             {
-                ECommerceData.Instance.ApprovePayment();
+                eCommerceData.ApprovePayment();
             }
 
             if (!string.IsNullOrWhiteSpace(rejectSubmit))
             {
-                ECommerceData.Instance.RejectPayment();
+                eCommerceData.RejectPayment();
             }
 
             InitializePage();
