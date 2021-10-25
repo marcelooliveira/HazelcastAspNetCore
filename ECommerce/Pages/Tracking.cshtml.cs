@@ -10,9 +10,9 @@ namespace ECommerce.Pages
 {
     public class TrackingModel : PageModel
     {
-        private readonly IECommerceData eCommerceData;
+        private readonly IECommerceDataHazelCast eCommerceData;
 
-        public TrackingModel(IECommerceData eCommerceData)
+        public TrackingModel(IECommerceDataHazelCast eCommerceData)
         {
             this.eCommerceData = eCommerceData;
         }

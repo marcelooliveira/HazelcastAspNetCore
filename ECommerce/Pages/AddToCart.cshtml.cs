@@ -12,9 +12,9 @@ namespace ECommerce.Pages
 {
     public class AddToCartModel : PageModel
     {
-        private readonly IECommerceData eCommerceData;
+        private readonly IECommerceDataHazelCast eCommerceData;
 
-        public AddToCartModel(IECommerceData eCommerceData)
+        public AddToCartModel(IECommerceDataHazelCast eCommerceData)
         {
             this.eCommerceData = eCommerceData;
         }

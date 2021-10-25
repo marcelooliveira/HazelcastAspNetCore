@@ -25,7 +25,7 @@ namespace ECommerce
             var options = HazelcastOptions.Build();
             // create an Hazelcast client and connect to a server running on localhost
             var client = HazelcastClientFactory.StartNewClientAsync(options).Result;
-            await webHost.Services.GetRequiredService<IECommerceData>().InitializeAsync(client);
+            await webHost.Services.GetRequiredService<IECommerceDataHazelCast>().InitializeAsync(client);
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

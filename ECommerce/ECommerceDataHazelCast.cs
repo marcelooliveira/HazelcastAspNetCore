@@ -8,13 +8,21 @@ using System.Threading.Tasks;
 
 namespace ECommerce
 {
-    public class ECommerceDataHazelCast : IECommerceData
+    public interface IECommerceDataHazelCast : IBaseECommerceData
+    {
+        Task InitializeAsync(Hazelcast.IHazelcastClient client);
+        Task<List<CartItem>> GetCartItemsAsync();
+        Task AddCartItemAsync(CartItem cartItem);
+        Task CheckoutAsync();
+        Task<List<Order>> OrdersAwaitingPaymentAsync();
+        Task ApprovePaymentAsync();
+        Task RejectPaymentAsync();
+    }
+
+    public class ECommerceDataHazelCast : BaseECommerceData, IECommerceDataHazelCast
     {
         private IHMap<int, CartItem> cartItemsMap;
         private IHQueue<Order> ordersAwaitingPaymentQueue;
-        private List<Order> ordersForDelivery;
-        private List<Order> ordersRejected;
-        public int MaxOrderId { get; private set; }
 
         public IHazelcastClient hazelcastClient { get; private set; }
 
@@ -24,11 +32,13 @@ namespace ECommerce
 
             // Get the Distributed Map from Cluster.
             cartItemsMap = await hazelcastClient.GetMapAsync<int, CartItem>("distributed-cartitem-map");
+            await cartItemsMap.ClearAsync();
             await cartItemsMap.PutAsync(17, new CartItem(1, 17, "🥥", "Coconut", 4.50m, 2));
             await cartItemsMap.PutAsync(13, new CartItem(2, 13, "🍒", "Cherries box", 3.50m, 3));
             await cartItemsMap.PutAsync(4, new CartItem(3, 4, "🍊", "Tangerine box", 3.50m, 1));
 
             ordersAwaitingPaymentQueue = await hazelcastClient.GetQueueAsync<Order>("distributed-order-queue");
+            await ordersAwaitingPaymentQueue.ClearAsync();
             await ordersAwaitingPaymentQueue.PutAsync(new Order(1006, new DateTime(2021, 10, 11, 3, 3, 0), 7, 70.00m));
             await ordersAwaitingPaymentQueue.PutAsync(new Order(1007, new DateTime(2021, 10, 12, 17, 17, 0), 2, 20.00m));
             await ordersAwaitingPaymentQueue.PutAsync(new Order(1008, new DateTime(2021, 10, 13, 21, 9, 0), 5, 50.00m));
@@ -49,30 +59,6 @@ namespace ECommerce
             MaxOrderId = 1008;
         }
 
-        public List<Product> GetProductList()
-        {
-            return new List<Product>()
-            {
-                new Product ( 1, "🍇", "Grapes box", 3.50m ),
-                new Product ( 2, "🍈", "Melon box", 3.50m ),
-                new Product ( 3, "🍉", "Watermelon box", 5.50m ),
-                new Product ( 4, "🍊", "Tangerine box", 3.50m ),
-                new Product ( 5, "🍋", "Lemon box", 3.50m ),
-                new Product ( 6, "🍌", "Banana box", 3.50m ),
-                new Product ( 7, "🍍", "Pineapple box", 3.50m ),
-                new Product ( 8, "🥭", "Mango box", 4.50m ),
-                new Product ( 9, "🍎", "Red Apple box", 3.50m ),
-                new Product ( 10, "🍏", "Green Apple box", 6.50m ),
-                new Product ( 11, "🍐", "Pear box", 3.50m ),
-                new Product ( 12, "🍑", "Peach box", 3.50m ),
-                new Product ( 13, "🍒", "Cherries box", 3.50m ),
-                new Product ( 14, "🍓", "Strawberry box", 3.50m ),
-                new Product ( 15, "🥝", "Kiwi Fruit box", 7.50m ),
-                new Product ( 16, "🍅", "Tomato box", 2.50m ),
-                new Product ( 17, "🥥", "Coconut", 4.50m )
-            };
-        }
-
         public async Task<List<CartItem>> GetCartItemsAsync()
         {
             var values = await cartItemsMap.GetValuesAsync();
@@ -90,16 +76,6 @@ namespace ECommerce
         {
             var list = await ordersAwaitingPaymentQueue.GetAllAsync();
             return list.ToList().OrderByDescending(o => o.Id).ToList();
-        }
-
-        public List<Order> OrdersForDelivery()
-        {
-            return ordersForDelivery.OrderByDescending(o => o.Id).ToList();
-        }
-
-        public List<Order> OrdersRejected()
-        {
-            return ordersRejected.OrderByDescending(o => o.Id).ToList();
         }
 
         public async Task ApprovePaymentAsync()
