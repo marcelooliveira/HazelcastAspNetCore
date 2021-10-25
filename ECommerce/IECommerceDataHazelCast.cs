@@ -10,11 +10,11 @@ namespace ECommerce
         Task<List<CartItem>> GetCartItemsAsync();
         Task AddCartItemAsync(CartItem cartItem);
         Task CheckoutAsync();
-        void ApprovePayment();
         List<Product> GetProductList();
-        List<Order> OrdersAwaitingPayment();
+        Task<List<Order>> OrdersAwaitingPaymentAsync();
         List<Order> OrdersForDelivery();
         List<Order> OrdersRejected();
-        void RejectPayment();
+        Task ApprovePaymentAsync();
+        Task RejectPaymentAsync();
     }
 }

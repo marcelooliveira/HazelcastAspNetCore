@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Models
 {
-
+    [Serializable]
     public class Order : BaseEntity
     {
         public Order()

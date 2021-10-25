@@ -11,7 +11,7 @@ namespace ECommerce
     public class ECommerceDataHazelCast : IECommerceData
     {
         private IHMap<int, CartItem> cartItemsMap;
-        private Queue<Order> ordersAwaitingPaymentQueue;
+        private IHQueue<Order> ordersAwaitingPaymentQueue;
         private List<Order> ordersForDelivery;
         private List<Order> ordersRejected;
         public int MaxOrderId { get; private set; }
@@ -23,18 +23,15 @@ namespace ECommerce
             this.hazelcastClient = hazelcastClient;
 
             // Get the Distributed Map from Cluster.
-            cartItemsMap = await hazelcastClient.GetMapAsync<int, CartItem>("cartitem-map");
+            cartItemsMap = await hazelcastClient.GetMapAsync<int, CartItem>("distributed-cartitem-map");
             await cartItemsMap.PutAsync(17, new CartItem(1, 17, "🥥", "Coconut", 4.50m, 2));
             await cartItemsMap.PutAsync(13, new CartItem(2, 13, "🍒", "Cherries box", 3.50m, 3));
             await cartItemsMap.PutAsync(4, new CartItem(3, 4, "🍊", "Tangerine box", 3.50m, 1));
 
-            ordersAwaitingPaymentQueue = new Queue<Order>(
-                new List<Order>
-                {
-                    new Order(1006, new DateTime(2021, 10, 11, 3, 3, 0), 7, 70.00m),
-                    new Order(1007, new DateTime(2021, 10, 12, 17, 17, 0), 2, 20.00m),
-                    new Order(1008, new DateTime(2021, 10, 13, 21, 9, 0), 5, 50.00m)
-                });
+            ordersAwaitingPaymentQueue = await hazelcastClient.GetQueueAsync<Order>("distributed-order-queue");
+            await ordersAwaitingPaymentQueue.PutAsync(new Order(1006, new DateTime(2021, 10, 11, 3, 3, 0), 7, 70.00m));
+            await ordersAwaitingPaymentQueue.PutAsync(new Order(1007, new DateTime(2021, 10, 12, 17, 17, 0), 2, 20.00m));
+            await ordersAwaitingPaymentQueue.PutAsync(new Order(1008, new DateTime(2021, 10, 13, 21, 9, 0), 5, 50.00m));
 
             ordersForDelivery = new List<Order>
                 {
@@ -89,9 +86,10 @@ namespace ECommerce
             await cartItemsMap.PutAsync(newItem.ProductId, newItem);
         }
 
-        public List<Order> OrdersAwaitingPayment()
+        public async Task<List<Order>> OrdersAwaitingPaymentAsync()
         {
-            return ordersAwaitingPaymentQueue.OrderByDescending(o => o.Id).ToList();
+            var list = await ordersAwaitingPaymentQueue.GetAllAsync();
+            return list.ToList().OrderByDescending(o => o.Id).ToList();
         }
 
         public List<Order> OrdersForDelivery()
@@ -104,15 +102,15 @@ namespace ECommerce
             return ordersRejected.OrderByDescending(o => o.Id).ToList();
         }
 
-        public void ApprovePayment()
+        public async Task ApprovePaymentAsync()
         {
-            var order = ordersAwaitingPaymentQueue.Dequeue();
+            var order = await ordersAwaitingPaymentQueue.TakeAsync();
             ordersForDelivery.Add(order);
         }
 
-        public void RejectPayment()
+        public async Task RejectPaymentAsync()
         {
-            var order = ordersAwaitingPaymentQueue.Dequeue();
+            var order = await ordersAwaitingPaymentQueue.TakeAsync();
             ordersRejected.Add(order);
         }
 
@@ -122,7 +120,7 @@ namespace ECommerce
 
             var cartItems = await cartItemsMap.GetValuesAsync();
             var order = new Order(orderId, DateTime.Now, cartItems.Count, cartItems.Sum(i => i.Quantity * i.UnitPrice));
-            ordersAwaitingPaymentQueue.Enqueue(order);
+            await ordersAwaitingPaymentQueue.PutAsync(order);
             await cartItemsMap.ClearAsync();
         }
     }

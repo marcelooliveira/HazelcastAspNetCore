@@ -25,19 +25,19 @@ namespace ECommerce.Pages
         [BindProperty]
         public string rejectSubmit { get; set; }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            InitializePage();
+            await InitializePageAsync();
         }
 
-        private void InitializePage()
+        private async Task InitializePageAsync()
         {
-            this.OrdersAwaitingPayment = eCommerceData.OrdersAwaitingPayment();
+            this.OrdersAwaitingPayment = await eCommerceData.OrdersAwaitingPaymentAsync();
             this.OrdersForDelivery = eCommerceData.OrdersForDelivery();
             this.OrdersRejected = eCommerceData.OrdersRejected();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -46,15 +46,15 @@ namespace ECommerce.Pages
 
             if (!string.IsNullOrWhiteSpace(approveSubmit))
             {
-                eCommerceData.ApprovePayment();
+                await eCommerceData.ApprovePaymentAsync();
             }
 
             if (!string.IsNullOrWhiteSpace(rejectSubmit))
             {
-                eCommerceData.RejectPayment();
+                await eCommerceData.RejectPaymentAsync();
             }
 
-            InitializePage();
+            await InitializePageAsync();
             return Page();
         }
     }
