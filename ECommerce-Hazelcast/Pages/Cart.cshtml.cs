@@ -30,7 +30,6 @@ namespace ECommerce.Pages
 
         private async Task InitializePageAsync()
         {
-            //await eCommerceData.InitializeAsync();
             this.CartItems = await eCommerceData.GetCartItemsAsync();
         }
 

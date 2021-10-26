@@ -1,4 +1,3 @@
-using Hazelcast;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,16 +15,13 @@ namespace ECommerce
         public static async Task Main(string[] args)
         {
             var webHost = CreateHostBuilder(args).Build();
-            await SetupHazelCast(webHost);
+            Setup(webHost);
             webHost.Run();
         }
 
-        private static async Task SetupHazelCast(IHost webHost)
+        private static void Setup(IHost webHost)
         {
-            var options = HazelcastOptions.Build();
-            // create an Hazelcast client and connect to a server running on localhost
-            var client = HazelcastClientFactory.StartNewClientAsync(options).Result;
-            await webHost.Services.GetRequiredService<IECommerceDataHazelCast>().InitializeAsync(client);
+            webHost.Services.GetRequiredService<IECommerceData>().Initialize();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

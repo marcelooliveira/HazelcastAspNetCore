@@ -10,9 +10,9 @@ namespace ECommerce.Pages
 {
     public class TrackingModel : PageModel
     {
-        private readonly IECommerceDataHazelCast eCommerceData;
+        private readonly IECommerceData eCommerceData;
 
-        public TrackingModel(IECommerceDataHazelCast eCommerceData)
+        public TrackingModel(IECommerceData eCommerceData)
         {
             this.eCommerceData = eCommerceData;
         }
@@ -25,19 +25,19 @@ namespace ECommerce.Pages
         [BindProperty]
         public string rejectSubmit { get; set; }
 
-        public async Task OnGetAsync()
+        public void OnGet()
         {
-            await InitializePageAsync();
+            InitializePage();
         }
 
-        private async Task InitializePageAsync()
+        private void InitializePage()
         {
-            this.OrdersAwaitingPayment = await eCommerceData.OrdersAwaitingPaymentAsync();
+            this.OrdersAwaitingPayment = eCommerceData.OrdersAwaitingPayment();
             this.OrdersForDelivery = eCommerceData.OrdersForDelivery();
             this.OrdersRejected = eCommerceData.OrdersRejected();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost()
         {
             if (!ModelState.IsValid)
             {
@@ -46,15 +46,15 @@ namespace ECommerce.Pages
 
             if (!string.IsNullOrWhiteSpace(approveSubmit))
             {
-                await eCommerceData.ApprovePaymentAsync();
+                eCommerceData.ApprovePayment();
             }
 
             if (!string.IsNullOrWhiteSpace(rejectSubmit))
             {
-                await eCommerceData.RejectPaymentAsync();
+                eCommerceData.RejectPayment();
             }
 
-            await InitializePageAsync();
+            InitializePage();
             return Page();
         }
     }

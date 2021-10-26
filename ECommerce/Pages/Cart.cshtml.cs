@@ -10,9 +10,9 @@ namespace ECommerce.Pages
 {
     public class CartModel : PageModel
     {
-        private readonly IECommerceDataHazelCast eCommerceData;
+        private readonly IECommerceData eCommerceData;
 
-        public CartModel(IECommerceDataHazelCast eCommerceData)
+        public CartModel(IECommerceData eCommerceData)
         {
             this.eCommerceData = eCommerceData;
         }
@@ -23,18 +23,17 @@ namespace ECommerce.Pages
         [BindProperty]
         public string checkoutSubmit { get; set; }
 
-        public async Task OnGetAsync()
+        public void OnGet()
         {
-            await InitializePageAsync();
+            InitializePage();
         }
 
-        private async Task InitializePageAsync()
+        private void InitializePage()
         {
-            //await eCommerceData.InitializeAsync();
-            this.CartItems = await eCommerceData.GetCartItemsAsync();
+            this.CartItems = eCommerceData.GetCartItems();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost()
         {
             if (!ModelState.IsValid)
             {
@@ -48,10 +47,10 @@ namespace ECommerce.Pages
 
             if (!string.IsNullOrWhiteSpace(checkoutSubmit))
             {
-                await eCommerceData.CheckoutAsync();
+                eCommerceData.Checkout();
             }
 
-            await InitializePageAsync();
+            InitializePage();
             return Page();
         }
     }

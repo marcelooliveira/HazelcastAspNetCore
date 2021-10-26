@@ -31,14 +31,14 @@ namespace ECommerce.Pages
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            eCommerceData.AddCartItemAsync(CartItem);
+            await eCommerceData.AddCartItemAsync(CartItem);
 
             return RedirectToPage("Cart");
         }

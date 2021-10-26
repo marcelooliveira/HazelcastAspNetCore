@@ -5,8 +5,4 @@
     <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Hazelcast.Net" Version="4.1.0" />
-  </ItemGroup>
-
 </Project>

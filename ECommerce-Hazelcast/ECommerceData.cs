@@ -51,6 +51,8 @@ namespace ECommerce
                     new Order(1004, new DateTime(2021, 10, 3, 17, 17, 0), 2, 24.00m),
                     new Order(1005, new DateTime(2021, 10, 7, 09, 12, 0), 4, 17.00m)
                 };
+
+            MaxOrderId = 1008;
         }
 
         public List<CartItem> GetCartItems()
@@ -84,7 +86,7 @@ namespace ECommerce
 
         public void Checkout()
         {
-            int orderId = ordersAwaitingPayment.Max(o => o.Id) + 1;
+            int orderId = ++MaxOrderId;
 
             var order = new Order(orderId, DateTime.Now, cartItems.Count, cartItems.Sum(i => i.Value.Quantity * i.Value.UnitPrice));
             ordersAwaitingPayment.Enqueue(order);
