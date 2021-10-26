@@ -8,17 +8,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ECommerce.Pages
 {
-    public class TrackingModel : PageModel
+    public class PaymentModel : PageModel
     {
         private readonly IECommerceData eCommerceData;
 
-        public TrackingModel(IECommerceData eCommerceData)
+        public PaymentModel(IECommerceData eCommerceData)
         {
             this.eCommerceData = eCommerceData;
         }
 
-        public List<Order> OrdersForDelivery { get; private set; }
-        public List<Order> OrdersRejected { get; private set; }
+        public List<Order> OrdersAwaitingPayment { get; private set; }
+
+        [BindProperty]
+        public string approveSubmit { get; set; }
+        [BindProperty]
+        public string rejectSubmit { get; set; }
 
         public void OnGet()
         {
@@ -27,8 +31,7 @@ namespace ECommerce.Pages
 
         private void InitializePage()
         {
-            this.OrdersForDelivery = eCommerceData.OrdersForDelivery();
-            this.OrdersRejected = eCommerceData.OrdersRejected();
+            this.OrdersAwaitingPayment = eCommerceData.OrdersAwaitingPayment();
         }
 
         public IActionResult OnPost()
@@ -36,6 +39,16 @@ namespace ECommerce.Pages
             if (!ModelState.IsValid)
             {
                 return Page();
+            }
+
+            if (!string.IsNullOrWhiteSpace(approveSubmit))
+            {
+                eCommerceData.ApprovePayment();
+            }
+
+            if (!string.IsNullOrWhiteSpace(rejectSubmit))
+            {
+                eCommerceData.RejectPayment();
             }
 
             InitializePage();

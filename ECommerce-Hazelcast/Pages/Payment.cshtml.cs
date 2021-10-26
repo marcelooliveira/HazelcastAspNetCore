@@ -8,18 +8,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ECommerce.Pages
 {
-    public class TrackingModel : PageModel
+    public class PaymentModel : PageModel
     {
         private readonly IECommerceDataHazelCast eCommerceData;
 
-        public TrackingModel(IECommerceDataHazelCast eCommerceData)
+        public PaymentModel(IECommerceDataHazelCast eCommerceData)
         {
             this.eCommerceData = eCommerceData;
         }
 
         public List<Order> OrdersAwaitingPayment { get; private set; }
-        public List<Order> OrdersForDelivery { get; private set; }
-        public List<Order> OrdersRejected { get; private set; }
+
         [BindProperty]
         public string approveSubmit { get; set; }
         [BindProperty]
@@ -33,8 +32,6 @@ namespace ECommerce.Pages
         private async Task InitializePageAsync()
         {
             this.OrdersAwaitingPayment = await eCommerceData.OrdersAwaitingPaymentAsync();
-            this.OrdersForDelivery = await eCommerceData.OrdersForDeliveryAsync();
-            this.OrdersRejected = await eCommerceData.OrdersRejectedAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()

@@ -7,14 +7,10 @@ namespace ECommerce
     public interface IBaseECommerceData
     {
         List<Product> GetProductList();
-        List<Order> OrdersForDelivery();
-        List<Order> OrdersRejected();
     }
 
     public class BaseECommerceData : IBaseECommerceData
     {
-        protected List<Order> ordersForDelivery;
-        protected List<Order> ordersRejected;
         protected int MaxOrderId { get; set; }
 
         public List<Product> GetProductList()
@@ -41,14 +37,5 @@ namespace ECommerce
             };
         }
 
-        public List<Order> OrdersForDelivery()
-        {
-            return ordersForDelivery.OrderByDescending(o => o.Id).ToList();
-        }
-
-        public List<Order> OrdersRejected()
-        {
-            return ordersRejected.OrderByDescending(o => o.Id).ToList();
-        }
     }
 }

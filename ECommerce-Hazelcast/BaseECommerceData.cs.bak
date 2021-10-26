@@ -36,6 +36,5 @@ namespace ECommerce
                 new Product ( 17, "🥥", "Coconut", 4.50m )
             };
         }
-
     }
 }

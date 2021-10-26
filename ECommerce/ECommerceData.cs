@@ -13,6 +13,8 @@ namespace ECommerce
         void AddCartItem(CartItem cartItem);
         void Checkout();
         List<Order> OrdersAwaitingPayment();
+        List<Order> OrdersForDelivery();
+        List<Order> OrdersRejected();
         void ApprovePayment();
         void RejectPayment();
     }
@@ -21,6 +23,8 @@ namespace ECommerce
     {
         private Dictionary<int, CartItem> cartItems;
         private Queue<Order> ordersAwaitingPayment;
+        private Queue<Order> ordersForDelivery;
+        private Queue<Order> ordersRejected;
 
         public void Initialize()
         {
@@ -39,18 +43,20 @@ namespace ECommerce
                     new Order(1008, new DateTime(2021, 10, 13, 21, 9, 0), 5, 50.00m)
                 });
 
-            ordersForDelivery = new List<Order>
+            ordersForDelivery = new Queue<Order>(
+                new List<Order>
                 {
                     new Order(1002, new DateTime(2021, 10, 2, 23, 3, 0), 5, 50.00m),
                     new Order(1003, new DateTime(2021, 10, 9, 7, 7, 0), 3, 30.00m)
-                };
+                });
 
-            ordersRejected = new List<Order>
+            ordersRejected = new Queue<Order>(
+                new List<Order>
                 {
                     new Order(1001, new DateTime(2021, 10, 1, 18, 32, 0), 5, 35.00m),
                     new Order(1004, new DateTime(2021, 10, 3, 17, 17, 0), 2, 24.00m),
                     new Order(1005, new DateTime(2021, 10, 7, 09, 12, 0), 4, 17.00m)
-                };
+                });
 
             MaxOrderId = 1008;
         }
@@ -72,16 +78,26 @@ namespace ECommerce
             return ordersAwaitingPayment.OrderByDescending(o => o.Id).ToList();
         }
 
+        public List<Order> OrdersForDelivery()
+        {
+            return ordersForDelivery.OrderByDescending(o => o.Id).ToList();
+        }
+
+        public List<Order> OrdersRejected()
+        {
+            return ordersRejected.OrderByDescending(o => o.Id).ToList();
+        }
+
         public void ApprovePayment()
         {
             var order = ordersAwaitingPayment.Dequeue();
-            ordersForDelivery.Add(order);
+            ordersForDelivery.Enqueue(order);
         }
 
         public void RejectPayment()
         {
             var order = ordersAwaitingPayment.Dequeue();
-            ordersRejected.Add(order);
+            ordersRejected.Enqueue(order);
         }
 
         public void Checkout()
