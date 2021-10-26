@@ -3,6 +3,7 @@ using Hazelcast;
 using Hazelcast.DistributedObjects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace ECommerce
     public interface IECommerceDataHazelCast : IBaseECommerceData
     {
         Task InitializeAsync(Hazelcast.IHazelcastClient client);
+        Task ShutdownAsync();
         Task<List<CartItem>> GetCartItemsAsync();
         Task AddCartItemAsync(CartItem cartItem);
         Task CheckoutAsync();
@@ -57,6 +59,16 @@ namespace ECommerce
                 };
 
             MaxOrderId = 1008;
+        }
+
+        public async Task ShutdownAsync()
+        {
+            // destroy the map
+            await hazelcastClient.DestroyAsync(cartItemsMap);
+            // destroy the queue
+            await hazelcastClient.DestroyAsync(ordersAwaitingPaymentQueue);
+
+            Debug.WriteLine("ShutdownAsync finished successfully.");
         }
 
         public async Task<List<CartItem>> GetCartItemsAsync()
