@@ -11,8 +11,7 @@ namespace ECommerce
 {
     public interface IECommerceDataHazelCast : IBaseECommerceData
     {
-        Task InitializeAsync(Hazelcast.IHazelcastClient client);
-        Task ShutdownAsync();
+        Task InitializeAsync();
         Task<List<CartItem>> GetCartItemsAsync();
         Task AddCartItemAsync(CartItem cartItem);
         Task CheckoutAsync();
@@ -21,6 +20,7 @@ namespace ECommerce
         Task<List<Order>> OrdersRejectedAsync();
         Task ApprovePaymentAsync();
         Task RejectPaymentAsync();
+        Task ShutdownAsync();
     }
 
     public class ECommerceDataHazelCast : BaseECommerceData, IECommerceDataHazelCast
@@ -32,9 +32,11 @@ namespace ECommerce
 
         public IHazelcastClient hazelcastClient { get; private set; }
 
-        public async Task InitializeAsync(IHazelcastClient hazelcastClient)
+        public async Task InitializeAsync()
         {
-            this.hazelcastClient = hazelcastClient;
+            var options = HazelcastOptions.Build();
+            // create an Hazelcast client and connect to a server running on localhost
+            this.hazelcastClient = HazelcastClientFactory.StartNewClientAsync(options).Result;
 
             // Get the Distributed Map from Cluster.
             cartItemsMap = await hazelcastClient.GetMapAsync<int, CartItem>("distributed-cartitem-map");
