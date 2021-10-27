@@ -34,9 +34,7 @@ namespace ECommerce
 
         public async Task InitializeAsync()
         {
-            var options = HazelcastOptions.Build();
-            // create an Hazelcast client and connect to a server running on localhost
-            this.hazelcastClient = HazelcastClientFactory.StartNewClientAsync(options).Result;
+            StartAsync();
 
             // Get the Distributed Map from Cluster.
             cartItemsMap = await hazelcastClient.GetMapAsync<int, CartItem>("distributed-cartitem-map");
@@ -63,6 +61,13 @@ namespace ECommerce
             await ordersRejectedQueue.PutAsync(new Order(1005, new DateTime(2021, 10, 7, 09, 12, 0), 4, 17.00m));
 
             MaxOrderId = 1008;
+        }
+
+        private void StartAsync()
+        {
+            var options = HazelcastOptions.Build();
+            // create an Hazelcast client and connect to a server running on localhost
+            this.hazelcastClient = HazelcastClientFactory.StartNewClientAsync(options).Result;
         }
 
         public async Task ShutdownAsync()
