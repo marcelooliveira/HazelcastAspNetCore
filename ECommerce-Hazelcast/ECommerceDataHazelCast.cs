@@ -82,8 +82,7 @@ namespace ECommerce
 
         public async Task<List<CartItem>> GetCartItemsAsync()
         {
-            var values = await cartItemsMap.GetValuesAsync();
-            return values.OrderBy(i => i.Id).ToList();
+            return (await cartItemsMap.GetValuesAsync()).ToList();
         }
 
         public async Task AddCartItemAsync(CartItem cartItem)
@@ -96,19 +95,19 @@ namespace ECommerce
         public async Task<List<Order>> OrdersAwaitingPaymentAsync()
         {
             var list = await ordersAwaitingPaymentQueue.GetAllAsync();
-            return list.ToList().OrderByDescending(o => o.Id).ToList();
+            return list.OrderByDescending(o => o.Id).ToList();
         }
 
         public async Task<List<Order>> OrdersForDeliveryAsync()
         {
             var list = await ordersForDeliveryQueue.GetAllAsync();
-            return list.ToList().OrderByDescending(o => o.Id).ToList();
+            return list.OrderByDescending(o => o.Id).ToList();
         }
 
         public async Task<List<Order>> OrdersRejectedAsync()
         {
             var list = await ordersRejectedQueue.GetAllAsync();
-            return list.ToList().OrderByDescending(o => o.Id).ToList();
+            return list.OrderByDescending(o => o.Id).ToList();
         }
 
         public async Task ApprovePaymentAsync()

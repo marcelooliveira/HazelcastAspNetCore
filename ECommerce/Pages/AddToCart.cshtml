@@ -7,7 +7,7 @@
 
 <div class="row mt-4">
     <div class="col col-md-8 offset-md-2 alert alert-primary bg-success text-white text-center">
-        <span class="h3">🛒 YOUR FRIENDLY GROCERY</span>
+        <span class="h3">🍎 YOUR FRIENDLY GROCERY</span>
     </div>
 </div>
 
@@ -15,10 +15,10 @@
     <div class="row">
         <div class="col col-md-8 offset-md-2">
             <div class="row alert alert-warning bg-dark text-white">
-                <span class="col col-1 mt-0 h6 border-left border-light text-center">Qty</span>
-                <span class="col col-7 mt-0 h6 border-left border-light text-center">Product</span>
-                <span class="col col-2 mt-0 h6 border-left border-light text-right">Unit Price</span>
-                <span class="col col-2 mt-0 h6 border-left border-light text-right">Total</span>
+                <span class="col col-2 mt-0 h6 border-left border-light text-center">Qty</span>
+                <span class="col col-4 mt-0 h6 border-left border-light text-center">Product</span>
+                <span class="col col-3 mt-0 h6 border-left border-light text-right">Unit Price</span>
+                <span class="col col-3 mt-0 h6 border-left border-light text-right">Total</span>
             </div>
             <div class="row alert alert-warning flex-row align-items-center">
                 <input type="hidden" id="cartItemId" asp-for="CartItem.Id" />
@@ -47,7 +47,7 @@
         <div class="col col-4 offset-md-6">
             <input type="submit" class="h6 mt-0 float-right text-center" value="✔️ Confirm" />
             <input type="button" class="h6 mt-0 mr-4 button float-right text-center"
-                   value="❌ Cancel" onclick="location.href='/Cart'" />
+                   value="❌ Cancel" onclick="location.href='/Index'" />
         </div>
     </div>
 </form>

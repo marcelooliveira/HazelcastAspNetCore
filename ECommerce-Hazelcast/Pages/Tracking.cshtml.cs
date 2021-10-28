@@ -5,15 +5,18 @@ using System.Threading.Tasks;
 using ECommerce.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
 namespace ECommerce.Pages
 {
     public class TrackingModel : PageModel
     {
+        private readonly ILogger<IndexModel> logger;
         private readonly IECommerceDataHazelCast eCommerceData;
 
-        public TrackingModel(IECommerceDataHazelCast eCommerceData)
+        public TrackingModel(ILogger<IndexModel> logger, IECommerceDataHazelCast eCommerceData)
         {
+            this.logger = logger;
             this.eCommerceData = eCommerceData;
         }
 

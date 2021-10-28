@@ -5,15 +5,18 @@ using System.Threading.Tasks;
 using ECommerce.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
 namespace ECommerce.Pages
 {
     public class PaymentModel : PageModel
     {
+        private readonly ILogger<IndexModel> logger;
         private readonly IECommerceData eCommerceData;
 
-        public PaymentModel(IECommerceData eCommerceData)
+        public PaymentModel(ILogger<IndexModel> logger, IECommerceData eCommerceData)
         {
+            this.logger = logger;
             this.eCommerceData = eCommerceData;
         }
 

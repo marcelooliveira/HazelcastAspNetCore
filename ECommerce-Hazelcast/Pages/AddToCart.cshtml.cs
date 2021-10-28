@@ -7,15 +7,18 @@ using ECommerce.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
 namespace ECommerce.Pages
 {
     public class AddToCartModel : PageModel
     {
+        private readonly ILogger<IndexModel> logger;
         private readonly IECommerceDataHazelCast eCommerceData;
 
-        public AddToCartModel(IECommerceDataHazelCast eCommerceData)
+        public AddToCartModel(ILogger<IndexModel> logger, IECommerceDataHazelCast eCommerceData)
         {
+            this.logger = logger;
             this.eCommerceData = eCommerceData;
         }
 
@@ -40,7 +43,7 @@ namespace ECommerce.Pages
 
             await eCommerceData.AddCartItemAsync(CartItem);
 
-            return RedirectToPage("Cart");
+            return RedirectToPage("Index");
         }
 
         public JsonResult OnGetCartItem(CartItem cartItem)
