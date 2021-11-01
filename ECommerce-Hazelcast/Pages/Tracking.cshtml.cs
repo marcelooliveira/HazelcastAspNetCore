@@ -20,7 +20,6 @@ namespace ECommerce.Pages
             this.eCommerceData = eCommerceData;
         }
 
-        public List<Order> OrdersAwaitingPayment { get; private set; }
         public List<Order> OrdersForDelivery { get; private set; }
         public List<Order> OrdersRejected { get; private set; }
         [BindProperty]
@@ -35,7 +34,6 @@ namespace ECommerce.Pages
 
         private async Task InitializePageAsync()
         {
-            this.OrdersAwaitingPayment = await eCommerceData.OrdersAwaitingPaymentAsync();
             this.OrdersForDelivery = await eCommerceData.OrdersForDeliveryAsync();
             this.OrdersRejected = await eCommerceData.OrdersRejectedAsync();
         }

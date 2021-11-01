@@ -22,8 +22,8 @@
             </div>
             <div class="row alert alert-warning flex-row align-items-center">
                 <input type="hidden" id="cartItemId" asp-for="CartItem.Id" />
-                <input type="text" class="col col-1 mt-0 h6" id="quantity" asp-for="CartItem.Quantity"/>
-                <select id="productId" class="col col-7 mt-0 h6" asp-for="CartItem.ProductId">
+                <input type="number" class="col col-2 mt-0 h6" id="quantity" asp-for="CartItem.Quantity"/>
+                <select id="productId" class="col col-4 mt-0 h6" asp-for="CartItem.ProductId">
                     @foreach (var product in Model.Products)
                     {
                         @if (Model.CartItem.ProductId == product.Id)
@@ -37,8 +37,8 @@
 
                     }
                 </select>
-                <span id="unitPrice" class="col col-2 mt-0 h6 border-left border-light text-right">@Model.CartItem.UnitPrice.ToString("C")</span>
-                <span id="total" class="col col-2 mt-0 h6 border-left border-light text-right">@Model.CartItem.Total.ToString("C")</span>
+                <span id="unitPrice" class="col col-3 mt-0 h6 border-left border-light text-right">@Model.CartItem.UnitPrice.ToString("C")</span>
+                <span id="total" class="col col-3 mt-0 h6 border-left border-light text-right">@Model.CartItem.Total.ToString("C")</span>
             </div>
         </div>
     </div>

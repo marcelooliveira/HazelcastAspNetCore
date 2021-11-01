@@ -28,6 +28,7 @@ namespace ECommerce
 
         public void Initialize()
         {
+            
             cartItems = new Dictionary<int, CartItem>()
             {
                 [17] = new CartItem(1, 17, "🥥", "Coconut", 4.50m, 2),
